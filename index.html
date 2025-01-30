@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Viewer</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+            position: relative;
+        }
+        img {
+            max-width: 90%;
+            max-height: 90vh;
+            display: block;
+        }
+        .next-button {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 20px;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <img id="imageDisplay" src="https://i.imgur.com/LQjdC7p.png" alt="Event Flyer">
+    <button class="next-button" onclick="nextImage()">➡</button>
+
+    <script>
+        const images = [
+            "https://i.imgur.com/LQjdC7p.png",
+            "https://i.imgur.com/JxLQXba.png"
+        ];
+        
+        let currentIndex = 0;
+        function nextImage() {
+            currentIndex = (currentIndex + 1) % images.length;
+            document.getElementById("imageDisplay").src = images[currentIndex];
+        }
+    </script>
+</body>
+</html>
