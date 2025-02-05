@@ -15,11 +15,21 @@
             margin: 0;
             position: relative;
         }
-        img {
-            max-width: 90%;
+        .image-container {
+            position: relative;
+            overflow: hidden;
+            width: 90%;
             max-height: 70vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        img {
+            max-width: 100%;
+            max-height: 100%;
             display: block;
-            user-select: none; /* Disable text/image selection */
+            transition: transform 0.3s ease-in-out; /* Swipe animation */
+            user-select: none;
         }
         .next-button {
             position: absolute;
@@ -57,15 +67,35 @@
         .redirect-button:hover {
             background: #0056b3;
         }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .dot {
+            width: 10px;
+            height: 10px;
+            margin: 0 5px;
+            background-color: #ccc;
+            border-radius: 50%;
+            transition: background-color 0.3s ease-in-out;
+        }
+        .dot.active {
+            background-color: #007bff;
+        }
     </style>
 </head>
 <body>
-    <img id="imageDisplay" src="https://i.imgur.com/LQjdC7p.png" alt="Event Flyer">
-    <button class="next-button" onclick="nextImage()">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-big-right">
-            <path d="M6 9h6V5l7 7-7 7v-4H6V9z"/>
-        </svg>
-    </button>
+    <div class="image-container">
+        <img id="imageDisplay" src="https://i.imgur.com/LQjdC7p.png" alt="Event Flyer">
+        <button class="next-button" onclick="nextImage()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-big-right">
+                <path d="M6 9h6V5l7 7-7 7v-4H6V9z"/>
+            </svg>
+        </button>
+    </div>
+    <div class="pagination" id="pagination"></div>
     <a id="redirectButton" class="redirect-button" href="" target="_blank">Take me There!</a>
 
     <script>
@@ -76,33 +106,59 @@
         ];
         
         let currentIndex = 0;
+        let startX = 0;
+        let endX = 0;
 
-        // Initialize the first image and link on page load
-        document.getElementById("imageDisplay").src = images[currentIndex].src;
-        document.getElementById("redirectButton").href = images[currentIndex].link;
+        const imageDisplay = document.getElementById("imageDisplay");
+        const redirectButton = document.getElementById("redirectButton");
+        const pagination = document.getElementById("pagination");
 
-        // Function to go to the next image
+        // Initialize the first image and link
+        function initializeGallery() {
+            updateImageAndLink();
+            createPaginationDots();
+        }
+
+        // Update the image, link, and active dot
+        function updateImageAndLink() {
+            imageDisplay.style.transform = "translateX(0)"; // Reset animation position
+            imageDisplay.src = images[currentIndex].src;
+            redirectButton.href = images[currentIndex].link;
+            updateActiveDot();
+        }
+
+        // Create pagination dots
+        function createPaginationDots() {
+            pagination.innerHTML = ""; // Clear existing dots
+            images.forEach((_, index) => {
+                const dot = document.createElement("div");
+                dot.className = "dot";
+                if (index === currentIndex) dot.classList.add("active");
+                pagination.appendChild(dot);
+            });
+        }
+
+        // Update active dot
+        function updateActiveDot() {
+            const dots = document.querySelectorAll(".dot");
+            dots.forEach((dot, index) => {
+                dot.classList.toggle("active", index === currentIndex);
+            });
+        }
+
+        // Go to the next image
         function nextImage() {
             currentIndex = (currentIndex + 1) % images.length;
             updateImageAndLink();
         }
 
-        // Function to go to the previous image
+        // Go to the previous image
         function prevImage() {
             currentIndex = (currentIndex - 1 + images.length) % images.length;
             updateImageAndLink();
         }
 
-        // Update the image and link
-        function updateImageAndLink() {
-            document.getElementById("imageDisplay").src = images[currentIndex].src;
-            document.getElementById("redirectButton").href = images[currentIndex].link;
-        }
-
         // Swipe functionality
-        let startX = 0;
-        let endX = 0;
-
         document.addEventListener("touchstart", (e) => {
             startX = e.touches[0].clientX;
         });
@@ -115,12 +171,19 @@
             const diffX = startX - endX;
             if (diffX > 50) {
                 // Swipe left
-                nextImage();
+                currentIndex = (currentIndex + 1) % images.length;
+                imageDisplay.style.transform = "translateX(-100%)"; // Swipe animation
+                setTimeout(updateImageAndLink, 300); // Wait for animation to finish
             } else if (diffX < -50) {
                 // Swipe right
-                prevImage();
+                currentIndex = (currentIndex - 1 + images.length) % images.length;
+                imageDisplay.style.transform = "translateX(100%)"; // Swipe animation
+                setTimeout(updateImageAndLink, 300); // Wait for animation to finish
             }
         });
+
+        // Initialize the gallery on page load
+        initializeGallery();
     </script>
 </body>
 </html>
