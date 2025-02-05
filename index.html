@@ -19,6 +19,7 @@
             max-width: 90%;
             max-height: 70vh;
             display: block;
+            user-select: none; /* Disable text/image selection */
         }
         .next-button {
             position: absolute;
@@ -70,7 +71,7 @@
     <script>
         const images = [
             { src: "https://i.imgur.com/LQjdC7p.png", link: "https://www.instagram.com/p/DFVi7D4uGe7/" },
-            { src: "https://i.imgur.com/Uif5yNz.png", link: "https://www.instagram.com/p/DFOa9PCPQMR/" },
+            { src: "https://i.imgur.com/zXZ2Q4N.png", link: "https://www.instagram.com/p/DFOa9PCPQMR/" },
             { src: "https://i.imgur.com/y3BO3sl.jpeg", link: "https://www.instagram.com/p/DFnrQ8FRDJQ/" }
         ];
         
@@ -80,11 +81,46 @@
         document.getElementById("imageDisplay").src = images[currentIndex].src;
         document.getElementById("redirectButton").href = images[currentIndex].link;
 
+        // Function to go to the next image
         function nextImage() {
             currentIndex = (currentIndex + 1) % images.length;
+            updateImageAndLink();
+        }
+
+        // Function to go to the previous image
+        function prevImage() {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            updateImageAndLink();
+        }
+
+        // Update the image and link
+        function updateImageAndLink() {
             document.getElementById("imageDisplay").src = images[currentIndex].src;
             document.getElementById("redirectButton").href = images[currentIndex].link;
         }
+
+        // Swipe functionality
+        let startX = 0;
+        let endX = 0;
+
+        document.addEventListener("touchstart", (e) => {
+            startX = e.touches[0].clientX;
+        });
+
+        document.addEventListener("touchmove", (e) => {
+            endX = e.touches[0].clientX;
+        });
+
+        document.addEventListener("touchend", () => {
+            const diffX = startX - endX;
+            if (diffX > 50) {
+                // Swipe left
+                nextImage();
+            } else if (diffX < -50) {
+                // Swipe right
+                prevImage();
+            }
+        });
     </script>
 </body>
 </html>
