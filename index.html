@@ -31,28 +31,6 @@
             transition: transform 0.3s ease-in-out; /* Swipe animation */
             user-select: none;
         }
-        .next-button {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-        }
-        .next-button svg {
-            width: 40px;
-            height: 40px;
-            fill: none;
-            stroke: rgba(0, 0, 0, 0.7);
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-        .next-button:hover svg {
-            stroke: rgba(0, 0, 0, 1);
-        }
         .redirect-button {
             margin-top: 20px;
             background: #007bff;
@@ -89,11 +67,6 @@
 <body>
     <div class="image-container">
         <img id="imageDisplay" src="https://i.imgur.com/LQjdC7p.png" alt="Event Flyer">
-        <button class="next-button" onclick="nextImage()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-big-right">
-                <path d="M6 9h6V5l7 7-7 7v-4H6V9z"/>
-            </svg>
-        </button>
     </div>
     <div class="pagination" id="pagination"></div>
     <a id="redirectButton" class="redirect-button" href="" target="_blank">Take me There!</a>
